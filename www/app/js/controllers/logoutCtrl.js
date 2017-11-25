@@ -1,0 +1,9 @@
+app.controller("logoutCtrl",function($scope,loginService){
+  dataExchangeService.setStdId("current_"+Date.now().toString());
+	dataExchangeService.setSchuelerId("0");
+	dataExchangeService.setFach("0");
+	dataExchangeService.setKlasse("0");
+  $scope.init=function(){
+		loginService.logout();
+	};
+});

@@ -1,0 +1,13 @@
+<div ng-controller="KlasseAuswaehlenCtrl">
+  <div class="navEintragen">
+    <ul class="ekb_daten_ul">
+      <li class="ekb_daten_li"><a href="" ng-click="home()">Home</a></li>
+    </ul>
+  </div>
+  <table id="startTable" class="w3-table w3-bordered">
+    <tr ng-repeat="x in klassen">
+      <td><b>{{x.myKlasse}}</b></td>
+      <td> <button ng-disabled="enable==true" ng-click="bearbeiten(x.item)">Bearbieten</button> <td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,305 @@
+<?php
+	require_once('/home/ekbadmin/ekb/database/ClassDBC.php');
+
+	class SchuelerDaten
+	{
+		private $fach;
+		private $quartal;
+
+		public function getSchuelerDaten($schuelerId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT id FROM quartal WHERE anfang<CURDATE() AND ende>CURDATE();";
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$r = $sqlSet->fetch_assoc();
+			$this->quartal = $r['id'];
+
+
+			$strQ = "SELECT vorname, nachname, geburtsdatum,
+			datediff(now(),geburtsdatum)/365 AS voll, image,
+			attestpflicht, active
+			FROM schueler
+			WHERE matnr=".$schuelerId.";";
+
+			$sqlSet = $dbc->sqlStatement($strQ);
+
+			$i=0;
+			$r=$sqlSet->fetch_assoc();
+
+
+			if($r['voll']==null)
+			{
+				$r['voll']="unbekannt";
+			}
+			else if($r['voll']<18)
+			{
+				$r['voll']="nein";
+			}
+			else
+			{
+				$r['voll']="ja";
+			}
+
+			$dbc->close();
+			return $r;//json_encode($r,JSON_UNESCAPED_SLASHES);
+
+		}
+
+		public function getSumFehlstundenFachAktQuartal($schuelerId,$stdId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT fach FROM stundenplan WHERE id = ".$stdId.";";
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$r = $sqlSet->fetch_assoc();
+			$this->fach = $r['fach'];
+
+
+			$strQ = "SELECT floor(sum(fehlminuten)/45) AS fehlstd_fach
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND stundenplan.fach = '".$this->fach."'
+					AND verspaetet = 0
+					AND quartal=".$this->quartal.";";
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+
+			if($sqlSet != NULL){
+				$r = $sqlSet->fetch_assoc();
+				return $r;
+			}
+			else
+			{
+				$r = array("fehlstd_fach"=>0);
+				return $r;
+			}
+		}
+
+		public function getStundenEnstschuldigtFach($schuelerId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT floor(sum(fehlminuten)/45) AS std_entschuldigt_fach
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND stundenplan.fach = '".$this->fach."'
+					AND verspaetet = 0
+					AND entschuldigt > 1
+					AND quartal=".$this->quartal.";";
+
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+
+			if($sqlSet != NULL){
+				$r = $sqlSet->fetch_assoc();
+				return $r;
+			}
+			else
+			{
+				$r = array("std_entschuldigt_fach"=>0);
+				return $r;
+			}
+		}
+
+		public function getSumVerspaethungenFachAktQuartal($schuelerId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT sum(fehlminuten) AS versp_fach, count(fehlminuten) AS anz_versp
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND stundenplan.fach = '".$this->fach."'
+					AND verspaetet = 1
+					AND quartal=".$this->quartal.";";
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+
+				$r = $sqlSet->fetch_assoc();
+
+			if($r["anz_versp"]==0)
+			{
+				$r["versp_fach"] = 0;
+			}
+			return $r;
+		}
+
+		public function getVerspaetungEntschuldigtFach($schuelrID)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT floor(sum(fehlminuten)) AS ver_entschuldigt_fach
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND stundenplan.fach = '".$this->fach."'
+					AND verspaetet = 1
+					AND entschuldigt > 1
+					AND quartal=".$this->quartal.";";
+
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+			if($sqlSet != NULL){
+				$r = $sqlSet->fetch_assoc();
+				return $r;
+			}
+			else
+			{
+				$r = array("ver_entschuldigt_fach"=>0);
+				return $r;
+			}
+		}
+
+		public function getGesamtStundenFach($schuelerId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT Count(*)*(bis-von+1) AS gesamt_std
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND stundenplan.fach = '".$this->fach."'
+					AND quartal=".$this->quartal.";";
+
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+
+			if($sqlSet != NULL){
+				$r = $sqlSet->fetch_assoc();
+				return $r;
+			}
+			else
+			{
+				$r = array("gesamt_std"=>0);
+				return $r;
+			}
+		}
+
+		public function getFehlzeitenDetailFach($schuelerId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT DISTINCT fehlminuten, thema, datum, entschuldigt
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND fehlminuten != 0
+					AND stundenplan.fach = '".$this->fach."'
+					AND quartal=".$this->quartal.";";
+
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+			$i=0;
+
+			while($r = $sqlSet->fetch_assoc())
+			{
+     			$rows[] = $r;
+				if($rows[$i]["entschuldigt"] == 1)
+				{
+					$rows[$i]["entschuldigt"] = "|";
+				}
+				else if($rows[$i]["entschuldigt"] == 2)
+				{
+					$rows[$i]["entschuldigt"] = "K";
+				}
+				else if($rows[$i]["entschuldigt"] == 3)
+				{
+					$rows[$i]["entschuldigt"] = "B";
+				}
+				else if($rows[$i]["entschuldigt"] == 4)
+				{
+					$rows[$i]["entschuldigt"] = "A";
+				}
+
+				$i = $i+1;
+			}
+
+			$dbc->close();
+
+			return $rows;
+		}
+
+		public function getFehlzeitenUnentschuldigt20Tage($schuelerId)
+		{
+
+		}
+
+		public function getFehlzeitenListe($schuelrId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ = "SELECT DISTINCT fehlminuten, thema, datum, entschuldigt
+					FROM anwesenheit
+					INNER JOIN stundenplan
+					ON anwesenheit.unterrichtstunde = stundenplan.id
+					INNER JOIN quartal
+					ON quartal.id = anwesenheit.quartal
+					WHERE matnr = ".$schuelerId."
+					AND fehlminuten != 0
+					AND quartal=".$this->quartal.";";
+
+			$sqlSet = $dbc->sqlStatement($strQ);
+			$dbc->close();
+			$i=0;
+
+			while($r = $sqlSet->fetch_assoc())
+			{
+     			$rows[] = $r;
+				if($rows[$i]["entschuldigt"] == 1)
+				{
+					$rows[$i]["entschuldigt"] = "|";
+				}
+				else if($rows[$i]["entschuldigt"] == 2)
+				{
+					$rows[$i]["entschuldigt"] = "K";
+				}
+				else if($rows[$i]["entschuldigt"] == 3)
+				{
+					$rows[$i]["entschuldigt"] = "B";
+				}
+				else if($rows[$i]["entschuldigt"] == 4)
+				{
+					$rows[$i]["entschuldigt"] = "A";
+				}
+
+				$i = $i+1;
+			}
+
+			$dbc->close();
+
+			return $rows;
+
+		}
+
+
+	}
+?>

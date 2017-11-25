@@ -1,0 +1,24 @@
+<?php
+	require_once("/home/ekbadmin/ekb/database/ClassDBC.php");
+	$dbc = new DBConnection();
+	$dbc->connectDB();
+	
+	$datum=array("2017-03-01","2017-02-22","2017-02-15","2017-02-8","2017-02-1");
+	var_dump($datum);
+			$i=1;
+			foreach($datum as $d)
+			{
+				$strQ="INSERT INTO `stundenplan` 
+				VALUES 
+				('BQO12A','AE','SPG','JH3','".$d."',".$i++.",1,2,NULL,NULL,NULL),
+				('BQO12A','VOI','DK','A121','".$d."',".$i++.",3,4,NULL,NULL,NULL),
+				('BQO12A','NR','PKG','A227','".$d."',".$i++.",5,6,NULL,NULL,NULL),
+				('BQO12A','AE','PKG','A130','".$d."',".$i++.",5,6,NULL,NULL,NULL),
+				('BQO12A','HL','M','A227','".$d."',".$i++.",5,6,NULL,NULL,NULL),
+				('BQO12A','NN4','PKG','A126','".$d."',".$i++.",8,9,NULL,NULL,NULL);";
+				
+				echo $strQ;
+				//$dbc->sqlStatement($strQ);				
+			}
+	$dbc->close();
+?>

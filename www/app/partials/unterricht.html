@@ -1,0 +1,30 @@
+<div ng-controller="UnterrichtCtrl">
+	<div ng-include="'partials/navEintragen.html'"></div>
+	</div>
+	<div id="startTable">
+		<table class="w3-table w3-bordered">
+			<tr>
+				<td>
+					<input type="text" class="eingabe"
+						   placeholder="Unterrichtsinhalt eingeben"
+						   ng-model="neuerInhalt">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="text" class="eingabe"
+						   placeholder="Hausaufgaben eingeben"
+						   ng-model="neueHausaufgaben">
+				</td>
+			</tr>
+		</table>
+		<table class="w3-table w3-bordered">
+			<tr ng-repeat="x in unterricht">
+				<td>{{x.thema}} </td>
+				<td>{{x.aufgaben}}</td>
+				<td>{{x.lehrerkuerzel}}</td>
+				<td>{{x.datum}}</td>
+			</tr>
+		</table>
+	</div>
+</div>

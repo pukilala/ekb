@@ -1,0 +1,2 @@
+* 15 * * 1,2,3,4 /usr/bin/mysqldump -uroot -p2/3empty ekb>/home/fw/DynWeb/ekb/backup/$(date +\%Y\%m\%d)ekb_backup.sql
+

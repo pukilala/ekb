@@ -1,0 +1,87 @@
+.main { position: fixed;
+  	width: 100%;
+  	top: 0;
+  	left: 0;
+  	z-index: 1;
+  	height: 4em;
+  	background: rgba(0,0,0,0.9);
+  	padding-left: 5px;
+  }
+
+nav.main .menu li
+{
+  	display: inline-block;
+  	position: relative;
+}
+
+nav.main #colorcode img {
+
+  position: absolute;
+  z-index: 3;
+  top: 0.5em;
+}
+
+h2,h4
+{
+  margin-top: 20px;
+	color: white;
+}
+
+#start{
+	width: 100%;
+	position: absolute;
+	top: 60px;
+}
+
+.navEintragen
+{
+	position: fixed;
+	width: 100%;
+	left: 0;
+	z-index: 1;
+	background: rgba(0,0,0,0.9);
+}
+
+
+.buttonSave
+{
+  background: red;
+	border: none;
+	border-color: rgba(0,0,0,0.9);
+	color: white;
+    padding: 1.02em 1.02em;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+	float:right;
+    font-size: 1em;
+    cursor: pointer;
+	z-index:3;
+	margin-right: 2px;
+}
+
+#startTable
+{
+	position:absolute;
+	top:70px;
+	width:100%;
+}
+#startHome
+{
+	position:absolute;
+	top:55px;
+	width:100%;
+}
+.eingabe
+{
+	width : 100%;
+	border : none;
+}
+
+footer
+{
+	position: relative;
+	width : 100%;
+	bottom: 100%;
+	background : rgba(0,0,0,0.9);
+}

@@ -1,0 +1,132 @@
+<?php
+	/*	Speicher alle tagesaktuellen Stundenpläne und
+	*	alle leeren Anwesenheitslisten für den Tag in die Datenbank
+	*/
+
+	require_once(__DIR__.'/../../../ekb/database/ClassDBC.php');
+
+	class WSConnection
+	{
+ 		private $tooken = "7423e5f8a5c9e7dd8359631d85e6a58d9f62a6e85b52MTZ";
+		private $klassen = array();
+
+
+		public function getStundenplanKlasse($klasse)
+		{
+
+			try
+			{
+				$client = new SOAPClient(NULL,
+				array(
+				'proxy_host'     => "172.17.1.1",
+	      'proxy_port'     => 3128,
+	      'proxy_login'    => "wae",
+	      'proxy_password' => "ehochipi",
+				'location' => 'https://www.bk-tm.org/cus/soap/Stundenplan/WSStundenplanServer.php',
+				'uri' => 'https://www.bk-tm.org/cus/soap/Stundenplan',
+				'style' => SOAP_RPC,
+				'use' => SOAP_ENCODED )
+				);
+
+				$plan=$client->holeStundenplan($this->tooken,$klasse);
+
+				echo $klasse;
+			}
+			catch (SOAPFault $f)
+			{
+				echo "killed";
+				print $f->faultstring;
+			}
+			return($plan);
+		}
+
+		public function readAlleKlassen()
+		{
+			$dbc = new DBConnection();
+			$dbc->connectDB();
+			$strQ = "SELECT DISTINCT klassenname FROM klasse;";
+			$sqlSet = $dbc->sqlStatement($strQ);
+
+			while($name=$sqlSet->fetch_row())
+			{
+				$this->klassen[]=$name[0];
+			}
+			$dbc->close();
+		}
+
+		public function StdPlan2DB()
+		{
+
+			//einlesen aller Klassen
+			$this -> readAlleKlassen();
+
+			//Eintragen Tagesstundenplan
+			$dbc = new DBConnection();
+			$dbc->connectDB();
+			$strQ = array();
+			//$tag = 4;
+			//$ekbdate = "2017-03-16";
+
+			foreach($this->klassen as $klasse)
+			{
+
+				//$klasse="BQO12A";
+				//$datums = '2017-02-23';
+				$tmp=$this->getStundenplanKlasse($klasse);
+				for($i=0;$i<count($tmp);$i++)
+				{
+					$teil = (array)($tmp[$i]);
+					if( $teil["Wochentag"] == date("N"))
+					{
+						$teil['Klasse'] = trim($klasse);
+
+
+						$strQ = "INSERT INTO stundenplan(klasse, lehrerkuerzel, fach, raum, von, bis, datum)
+							VALUES('".$teil["Klasse"]."','".$teil["Lehrer"]."','".$teil["Fach"].
+							"','".$teil["Raum"]."','".$teil["von"]."','".$teil["bis"]."',CURDATE());";
+echo $strQ;
+						$dbc->sqlStatement($strQ);
+					}
+				}
+			}
+
+			//Eintragen der leeren tagesaktuellen Anwesenheitslisten
+			foreach($this->klassen as $klasse)
+			{
+				//echo $klasse;
+				$klasse = trim($klasse);
+
+				$strQ = "SELECT id FROM stundenplan WHERE klasse='".$klasse."' AND datum=CURDATE();";
+				$sqlSet_id = $dbc->sqlStatement($strQ); //IdStunde
+
+				$strQ = "SELECT DISTINCT matnr FROM schueler WHERE klasse='".$klasse."';";
+				$sqlSet_matnr = $dbc->sqlStatement($strQ); //matnr Schueler einer Klasse
+
+				$arrID=array();
+				$arrMatnr=array();
+				// 1. auslesen der Stundenid für jede Klasse
+				while($id=$sqlSet_id->fetch_row())
+				{
+					$arrID[]=$id[0];
+				}
+				while($matnr=$sqlSet_matnr->fetch_row())
+				{
+					$arrMatnr[]=$matnr[0];
+				}
+
+				// 2. Anlegen der Anwesenheitslisten
+				foreach($arrID as $sid)
+				{
+					foreach($arrMatnr as  $mat)
+					{
+						$strQ="INSERT INTO anwesenheit (matnr, unterrichtstunde, anwesend)
+						VALUES(".$mat.",".$sid.",3);";
+
+						$dbc->sqlStatement($strQ);
+					}
+				}
+			}
+			$dbc->close();
+		}
+	}
+?>

@@ -1,0 +1,81 @@
+<?php
+	/*
+	* Updaten der Anwesemheitsliste
+	*
+	*/
+	session_start();
+	require_once('/home/ekbadmin/ekb/database/ClassDBC.php');
+	
+
+	$data = file_get_contents("php://input");
+	$data=substr($data,10,-1); //Problem mit json
+
+	$arr=json_decode($data,true);
+
+	$dbc =  DBConnection :: getInstance();
+	$dbc->connectDB();
+
+
+	$strQ="SELECT datum FROM stundenplan WHERE id=".$arr[0]['id'].";";
+	$sqlSet=$dbc->sqlStatement($strQ);
+	$datum = array();
+	$datum=$sqlSet->fetch_assoc();
+
+	$strQ="SELECT id FROM quartal WHERE anfang < '".$datum['datum']."' AND ende >'".$datum['datum']."';";
+	$sqlSet=$dbc->sqlStatement($strQ);
+	$quartal=$sqlSet->fetch_assoc();
+
+
+	$i=0;
+
+	for($i;$i<count($arr);$i=$i+1)
+	{
+		if ($arr[$i]['anwesend']==0 )
+		{
+			$arr[$i]['fehlminuten'] = 90;
+		}
+
+		if ($arr[$i]['fehlminuten']!=0 and $arr[$i]['fehlminuten']!=90 )
+		{
+			$arr[$i]['verspaetet']=1;
+		}
+
+		if ($arr[$i]['fehlminuten']!=0)
+		{
+			$entschuldigt=1;
+		}
+		else
+		{
+		  $entschuldigt=0;
+		}
+
+
+		$file = 'test.txt';
+		file_put_contents($file,$entschuldigt);
+
+		$strQ = "UPDATE anwesenheit SET
+			anwesend = ".$arr[$i]['anwesend'].",
+			verspaetet = ".$arr[$i]['verspaetet'].",
+			fehlminuten = ".$arr[$i]['fehlminuten'].",
+			lehrerkuerzel ='".$_SESSION['bntzr']."',
+			quartal = ".$quartal['id'].",
+			entschuldigt = ".$entschuldigt."
+			WHERE matnr=".$arr[$i]['matnr']."
+			AND unterrichtstunde = ".$arr[$i]['id'].";";
+
+		$dbc->sqlStatement($strQ);
+
+		//noch zu testen
+
+		$strQ = "UPDATE anwesenheit SET
+			anwesend = ".$arr[$i]['anwesend']."
+			WHERE matnr=".$arr[$i]['matnr']."
+			AND unterrichtstunde > ".$arr[$i]['id']."
+			AND lehrerkuerzel=''
+			AND date(eintragung)=curdate();";
+
+		$dbc->sqlStatement($strQ);
+
+	}
+	$dbc->close();
+?>

@@ -1,0 +1,41 @@
+<div ng-controller="SchuelerCtrl">
+	<div class="navEintragen">
+		<ul class="ekb_daten_ul">
+			<li class="ekb_daten_li"><a href="" ng-click="home(); save()">Home</a></li>
+			<li class="ekb_daten_li"><a href="" ng-click="anwesend(); save()">Klasse</a></li>
+			<li class="ekb_daten_li"><a href="" ng-click="unterricht(); save()">Unterricht</a></li>
+			<li class="ekb_daten_li"><a href="" ng-click="bemerkung(); save()">Bemerkung</a></li>
+			<button class="buttonSave" ng-class="'saved':isSaved" ng-model="isSaved" ng-true-value="'0'" ng-false-value="'1'"
+							  ng-disabled="isSaved==1" ng-click="save()">{{schueler[0].klasse}} </br> {{isSaved}}
+			</button>
+		</ul>
+
+	</div>
+	<div id="startTable">
+			<p> <b>{{schueler[0].klasse}}</b> <b>{{schueler[0].Tag}}.{{schueler[0].Monat}}.{{schueler[0].Jahr}}</b><p>
+			<table  class="w3-table w3-bordered startTable">
+				<tr ng-repeat="x in schueler">
+					<td>
+						<a href="" ng-click="schuelerDetail(x.matnr)">
+							<img ng-src="./img/{{x.image}}" style="width: 36px; heigth: 24px;">
+						</a>
+					</td>
+					<td> {{x.nachname}} </td>
+					<td> {{x.vorname}} </td>
+					<td>
+						<input  type="checkbox" ng-model="x.anwesend" ng-true-value="'1'" ng-false-value="'0'" ng-click="setIsSaved()"></input>
+					</td>
+					<td>
+						<select ng-model="x.fehlminuten"
+						 ng-change="x.anwesend='1';setIsSaved()"  ng-disabled="x.anwesend==1" ng-value="v"
+						 ng-options="v for v in verSpaetung">
+						</select>
+					</td>
+					<td>
+						 <button ng-disabled="schueler.enable==0" ng-click="entschuldigen(x.matnr)">Entschuldigen</button>
+					</td>
+				</tr>
+			</table>
+
+	</div>
+</div>

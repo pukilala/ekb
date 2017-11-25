@@ -1,0 +1,104 @@
+ul.ekb_home_ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 200px;
+    background-color: #FDFDFD ;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+li.ekb_home_li
+{
+  border-bottom:  0.5px solid #808080;
+}
+
+li.ekb_home_li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+/* Change the link color on hover */
+li.ekb_home_li a:hover {
+    background-color:#000000 ;
+    opacity: 0.9;
+    color: white;
+}
+
+ul.ekb_daten_ul
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+li.ekb_daten_li
+{
+    float: left;
+}
+
+li.ekb_daten_li a
+{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 1.1em 1.02em;
+    text-decoration: none;
+    z-index: 3;
+}
+
+li.ekb_daten_li a:hover
+{
+    background-color: #111;
+}
+
+img.schueler
+{
+
+  height: 180px;
+  width: 180px;
+  margin-left: 20px;
+  margin-right: 20px;
+  float:left;
+}
+
+#ekb_schuelerDaten
+{
+  margin-bottom: 20px;
+  clear:left;
+  font-size: 1.2em;
+}
+
+
+.ekb_sumFehlzeit
+{
+  clear:left;
+}
+
+.ekb_h
+{
+  margin: 20px;
+  color:black;
+}
+
+.ekb_fehlzeit
+{
+  border: 1px solid silver;
+}
+
+table.ekb_fehlzeit
+{
+  margin: 20px;
+  width : 90%;
+  border-collapse: collapse;
+}
+
+td.ekb_fehlzeit
+{
+
+  padding-left:1em;
+}

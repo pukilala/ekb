@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular-route.js"></script>
+
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css"/>
+<link rel="stylesheet" type="text/css" href="./css/bktm.css"/>
+<link rel="stylesheet" type="text/css" href="./css/ekb.css"/>
+<link rel="stylesheet" type="text/css" href="./css/animate.css"/>
+
+
+</head>
+<body ng-app="loginApp">
+	<notifications-bar class="notifications"></notifications-bar>
+	<div ng-include="'partials/head.html'"></div>
+		<div id="start">
+		<div ng-view></div>
+
+		<script src="js/app.js"></script>
+		<script src="js/directives/loginDirective.js"></script>
+
+		<script src="js/services/loginService.js"></script>
+		<script src="js/services/sessionService.js"></script>
+		<script src="js/services/dataExchangeService.js"></script>
+
+
+		<script src="js/controllers/loginCtrl.js"></script>
+		<script src="js/controllers/logoutCtrl.js"></script>
+		<script src="js/controllers/homeCtrl.js"></script>
+		<script src="js/controllers/schuelerCtrl.js"></script>
+		<script src="js/controllers/nachTragenSelectTagCtrl.js"></script>
+		<script src="js/controllers/bemerkungCtrl.js"></script>
+		<script src="js/controllers/unterrichtCtrl.js"></script>
+		<script src="js/controllers/schuelerDetailCtrl.js"></script>
+		<script src="js/controllers/KlassenLehrer/klasseAuswaehlenCtrl.js"></script>
+		<script src="js/controllers/KlassenLehrer/klasseBearbeitenCtrl.js"></script>
+		<script src="js/controllers/KlassenLehrer/schuelerBearbeitenCtrl.js"></script>
+
+
+		<script type="text/javascript"></script>
+	</div>
+</body>
+</html>

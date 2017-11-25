@@ -1,0 +1,70 @@
+<?php
+	/**
+	*Stundenplan Lehrer und
+	*Anwesenheitsstatus einer Klasse
+	*Rügabewert: Json Array
+	*/
+	require_once('/home/ekbadmin/ekb/database/ClassDBC.php');
+	class SchuelerListe
+	{
+		public function getStdPlanTagLehrer($lehrer,$datum)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ="SELECT id, klasse, fach, von, bis 
+			FROM stundenplan 
+			INNER JOIN klasse
+			ON stundenplan.klasse = klasse.klassenname			
+			WHERE (lehrerkuerzel = '".$lehrer."' OR klasse.klassenlehrer = '".$lehrer."')  AND datum ='".$datum."';";
+			$sqlSet = $dbc->sqlStatement($strQ);
+
+			$i = 0;
+
+			while($r = $sqlSet->fetch_assoc())
+			{
+     				$rows[] = $r;
+				$rows[$i]["item"] = $i;
+				$i = $i+1;
+			}
+			$dbc->close();
+			//return $strQ;
+			return json_encode($rows, JSON_UNESCAPED_SLASHES);
+
+		}
+
+		public function getKlassseById($stdId)
+		{
+			$dbc =  DBConnection :: getInstance();
+			$dbc->connectDB();
+
+			$strQ="SELECT schueler.matnr, schueler.vorname, schueler.nachname, stundenplan.lehrerkuerzel, schueler.klasse,
+				anwesenheit.anwesend, anwesenheit.verspaetet, anwesenheit.fehlminuten, image,stundenplan.id
+
+				FROM schueler INNER JOIN anwesenheit
+				ON schueler.matnr = anwesenheit.matnr
+				INNER JOIN stundenplan
+				ON anwesenheit.unterrichtstunde=stundenplan.id
+				WHERE stundenplan.id=".$stdId."
+				AND active=1;";
+				
+				$sqlSet = $dbc->sqlStatement($strQ);
+
+				$i = 0;
+				while($r = $sqlSet->fetch_assoc())
+				{
+     				$rows[] = $r;
+					if($rows[$i]['anwesend']==3)
+					{
+  		 				$rows[$i]['anwesend']='1';
+					}
+					//$tmp=$rows[$i]['image'];
+					//$rows[$i]['image']="'../../img/".$tmp."'";
+					$i++;
+				}
+			$dbc->close();
+						
+			return json_encode($rows, JSON_UNESCAPED_SLASHES);
+		}
+	}
+?>

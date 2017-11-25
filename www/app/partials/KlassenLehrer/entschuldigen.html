@@ -1,0 +1,90 @@
+<div ng-controller="SchuelerDetailCtrl">
+	<div class="navEintragen">
+		<ul class="ekb_daten_ul">
+			<li class="ekb_daten_li"><a href="" ng-click="home()">Home</a></li>
+			<li class="ekb_daten_li"><a href="" ng-click="anwesend()">Klasse</a></li>
+			<button ng-click="save()" class="buttonSave">{{klasse}}</button>
+		</ul>
+	</div>
+	<div id="startTable">
+
+		<div id="ekb_schuelerDaten">
+			<img class="schueler" alt="x.image" ng-src="./img/{{schuelerDetail.image}}" heigth="120px" width="64px">
+				<table>
+				</br>
+					<tr>
+						<td><b>Vorname</b></td><td>:</td><td>{{schuelerDetail.vorname}}</td>
+					</tr>
+					<tr>
+						<td><b>Nachname</b></td><td>:</td><td>{{schuelerDetail.nachname}}</td>
+					</tr>
+					<tr>
+						<td><b>Volljährig</b></td><td>:</td><td>{{schuelerDetail.voll}}</td>
+					</tr>
+					<tr>
+						<td><b>Attestpflichtig</b></td><td>:</td><td>{{schuelerDetail.attestpflicht}}</td>
+					</tr>
+			</table>
+		</div>
+
+    <br>
+		<h3 class="ekb_h">Fehlzeiten Gesamt</h2>
+			<table class="ekb_fehlzeit">
+				<tr>
+					<th class="ekb_fehlzeit" colspan="3">Versäumte Stunden</th>
+					<th class="ekb_fehlzeit" colspan="4">Verspätungen in Minuten</th>
+					<th class="ekb_fehlzeit" colspan="2">Gesamt</th>
+				</tr>
+				<tr>
+					<td class="ekb_fehlzeit">E</td>
+					<td class="ekb_fehlzeit">U</td>
+					<td class="ekb_fehlzeit">G</td>
+
+					<td class="ekb_fehlzeit">E</td>
+					<td class="ekb_fehlzeit">U</td>
+					<td class="ekb_fehlzeit">G</td>
+					<td class="ekb_fehlzeit">Anz</td>
+
+					<td class="ekb_fehlzeit">in h</td>
+					<td class="ekb_fehlzeit">in %</td>
+				</tr>
+			<tr>
+				<td class="ekb_fehlzeit">{{schuelerDetail.fehlstunden_Entschuldigt}}</td>
+				<td class="ekb_fehlzeit">{{schuelerDetail.fehlstunden-schuelerDetail.fehlstunden_Entschuldigt}}</td>
+				<td class="ekb_fehlzeit">{{schuelerDetail.fehlstunden}}</td>
+
+				<td class="ekb_fehlzeit"> {{schuelerDetail.fehlmintuen_Entschuldigt}}</td>
+				<td class="ekb_fehlzeit">{{schuelerDetail.fehlmintuen_ver - schuelerDetail.fehlmintuen_Entschuldigt}}</td>
+				<td class="ekb_fehlzeit">{{schuelerDetail.fehlmintuen_ver}}</td>
+				<td class="ekb_fehlzeit">{{schuelerDetail.anz_versp_Gesamt}}</td>
+
+				<td class="ekb_fehlzeit">{{schuelerDetail.Fehlzeit_gesamt}}</td>
+				<td class="ekb_fehlzeit">{{schuelerDetail.Fehlzeiten_prozentual}}</td>
+			</tr>
+	</table>
+    <!--Unentschuldigte Fehlstunden innerhalb der letzten 20 Tage :
+    	{{schuelerDetail.fehlstunden20}}<br>-->
+    <br>
+    <table class="w3-table w3-bordered">
+      <tr>
+        <th>Datum</th>
+        <th>Fach</th>
+        <th>Fehlzeit</th>
+        <th>Fachlehrer</th>
+        <th>Entschuldigen</th>
+      </tr>
+      <tr ng-repeat="x in schuelerDetail.fzt">
+        <td>{{x.datum}} </td>
+        <td>{{x.fach}}</td>
+        <td>{{x.fehlminuten}}</td>
+        <td>{{x.lehrerkuerzel}}</td>
+        <td>
+          <select ng-disabled="schuelerDetail.enable == 0"ng-model="x.entschuldigt">
+            <option ng-value="'1'">I</option>
+            <option ng-value="'2'">K</option>
+            </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

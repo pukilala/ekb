@@ -1,0 +1,31 @@
+<div ng-controller="SchuelerCtrl">
+	<div class="navEintragen">
+		<ul>
+			<li><a href="" ng-click="unterricht(); save()">Unterricht</a></li>
+			<li><a href="" ng-click="bemerkung(); save()">Bemerkung</a></li>
+			<li><a href="" ng-click="home(); save()">Home</a></li>
+			<button ng-click="save()" class="buttonSave">Save</button>
+		</ul>
+	</div>
+	<div id="startTable">
+			<table  class="w3-table w3-bordered startTable">
+				<tr ng-repeat="x in schueler">
+					<td>
+						<a href="" ng-click="schuelerAnwesenheit(x.matnr)">
+							<img alt="x.image" ng-src="./img/{{x.image}}" style="width: 36px; heigth: 24px;">
+						</a>
+					</td>
+					<td> {{x.vorname}} </td>
+					<td> {{x.nachname}} </td>
+					<td>
+						<input  type="checkbox" ng-model="x.anwesend" ng-true-value="'1'" ng-false-value="'0'" />
+					</td>
+					<td>
+						<select ng-model="x.fehlminuten" ng-change="x.anwesend='1'" ng-disabled="x.anwesend==1"
+							ng-value="v" ng-options="v for v in verSpaetung">
+						</select>
+					</td>
+				</tr>
+			</table>
+	</div>
+</div>

@@ -1,0 +1,22 @@
+<div ng-controller="KlasseBearbeitenCtrl">
+  <div class="navEintragen">
+    <ul class="ekb_daten_ul">
+      <li class="ekb_daten_li"><a href="" ng-click="home()">Home</a></li>
+    </ul>
+  </div>
+	<div id="startTable">
+			<table  class="w3-table w3-bordered startTable">
+				<tr ng-repeat="x in schueler">
+					<td>
+							<img ng-src="./img/{{x.image}}" style="width: 36px; heigth: 24px;">
+						</a>
+					</td>
+					<td> {{x.vorname}} </td>
+					<td> {{x.nachname}} </td>
+					<td> <button ng-click="schuelerBearbeiten(x.matnr)">Beabeiten</button> </td>
+						</select>
+					</td>
+				</tr>
+			</table>
+	</div>
+</div>

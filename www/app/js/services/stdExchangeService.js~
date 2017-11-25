@@ -1,0 +1,13 @@
+app.service('stdExchangeService', function() {
+	var stdId ="current_"+Date.now().toString();
+	return {
+			getStdId: function()
+			{	
+			return stdId;
+			},
+			setStdId: function(value)
+			{
+				stdId=value;				
+			}
+	 };
+});

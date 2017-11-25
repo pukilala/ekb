@@ -1,0 +1,54 @@
+<div ng-controller="SchuelerBearbeitenCtrl">
+	<div class="navEintragen">
+		<ul class="ekb_daten_ul">
+			<li class="ekb_daten_li"><a href="" ng-click="home()">Home</a></li>
+			<li class="ekb_daten_li"><a href="" ng-click="klasseBearbeiten()">Klasse</a></li>
+			<button ng-click="save()" class="buttonSave">Save</button>
+		</ul>
+	</div>
+	<div id="startTable">
+		<table>
+			<tr>
+				<td><img alt="x.image" ng-src="./img/{{schuelerDetail.image}}" heigth="120px" width="64px"></td>
+			</tr>
+			<tr>
+      	<td>Vorname:</td><td><input type="text" name="vorname" ng-model="schuelerDetail.vorname"></td>
+			</tr>
+			<tr>
+				<td>Nachname:</td><td><input type="text" name="nachname" ng-model="schuelerDetail.nachname"></td>
+			</tr>
+			<tr>
+				<td>Klasse:</td><td>
+					<select ng-model="schuelerDetail.klasse">
+						<option ng-value="x.klassenname" ng-repeat="x in schuelerDetail"> {{x.klassenname}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>Geburtsdatum:</td><td><input type="date" name="gebDatum"
+					ng-model="schuelerDetail.geburtsdatum" required></br>
+					</td>
+			</tr>
+			<tr>
+				<td>Attestpflichtig:</td><td><input type="checkbox" name="attestpflichtig"
+					ng-true-value="'ja'" ng-false-value="'nein'" ng-model="schuelerDetail.attestpflicht"></td>
+			</tr>
+			<tr>
+				<td>Religion:</td><td><input type="checkbox" name="religion"
+					ng-true-value="'1'" ng-false-value="'0'" ng-model="schuelerDetail.Religion"></td>
+			</tr>
+			<tr>
+				<td>Active:</td><td><input type="checkbox" name="active"
+					ng-true-value="'1'" ng-false-value="'0'" ng-model="schuelerDetail.active"></td>
+			</tr>
+			<tr>
+				<td>Eingeschult:</td><td><input type="date" name="eingeschult"
+					 ng-model="schuelerDetail.eingeschult"></td>
+			</tr>
+			<tr>
+				<td>Ausgeschult:</td><td><input type="date" name="ausgeschult"
+					ng-disabled="schuelerDetail.active==1" ng-model="schuelerDetail.ausgeschult" required></td>
+			</tr>
+	</table>
+	</div>
+</div>

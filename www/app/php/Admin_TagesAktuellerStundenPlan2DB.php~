@@ -1,0 +1,6 @@
+<?php
+require_once('Admin_ClassWebService.php');
+$wsc = new WSConnection();
+$wsc->stdPlan2DB();
+echo "ende";
+?>
